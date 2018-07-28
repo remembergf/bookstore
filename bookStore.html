@@ -1,0 +1,132 @@
+<!-- 这个项目整体上来说是完善的，但是也存在一些小的问题，就是当我们从中间或者头部删除一个数据时，底下数据的id号不能够自增一，不过之后肯定会解决这个问题的
+升级版-使用了本地存储：https://jsbin.com/busipir/edit?js,output -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>bookStore System</title>
+		<meta charset="utf-8">
+		<!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.7/vue.min.js
+"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.17/vue-resource.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="col-md-6 col-md-offset-3">
+				<h1 style="text-align: center;">Hello Vue.js !</h1>
+				<div id="app">
+					<table class="table table-hover" v-cloak>
+						<thead>
+							<tr>
+								<th class="text-right">序号</th>
+								<th class="text-right">书名</th>
+								<th class="text-right">作者</th>
+								<th class="text-right">价格</th>
+								<th class="text-right">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="book in books">
+								<td class="text-right">{{ book.id }}</td>
+								<td class="text-right">{{ book.name }}</td>
+								<td class="text-right">{{ book.author }}</td>
+								<td class="text-right">{{ book.price }}</td>
+								<template v-if="book.id % 2 == 0">
+									<td class="text-right">
+										<button type="button" class="btn btn-success" @click="delBook(book)">删除</button>
+									</td>
+								</template>
+								<template v-else>
+									<td class="text-right">
+										<button type="button" class="btn btn-danger" @click="delBook(book)">删除</button>
+									</td>
+								</template>
+							</tr>
+							<tr>
+								<td class="text-right" colspan="5">
+									<h4>总价:{{ sum }}</h4>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div id="add-book">
+						<legend>添加书籍</legend>
+						<div class="form-group">
+							<label>书名</label>
+							<input type="text" v-model="book.name" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>作者</label>
+							<input type="text" v-model="book.author" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>价格</label>
+							<input type="text" v-model="book.price" class="form-control">
+						</div>
+						<button type="button" class="btn btn-primary btn-block" @click="addBook()">添加书籍</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var vm = new Vue({
+				el:"#app",
+				data:{
+					sortparam:'',
+					book:{
+						id:0,
+						name:'',
+						author:'',
+						price:''
+					},
+					books:[{
+						id:1,
+						name:'红楼梦',
+						author:'曹雪芹',
+						price:65
+					},
+					{
+						id:2,
+						name:'西游记',
+						author:'吴承恩',
+						price:60
+					},
+					{
+						id:3,
+						name:'水浒传',
+						author:'施耐庵',
+						price:55
+					},
+					{
+						id:4,
+						name:'三国演义',
+						author:'罗贯中',
+						price:50
+					}]
+				},
+				computed:{
+					sum:function(){
+						var result = 0;
+						for(var i = 0,len = this.books.length; i < len; i++)
+						{
+							result += Number(this.books[i].price);
+						}
+						return result;
+					}
+				},
+				methods:{
+					addBook:function(){
+						this.book.id = this.books.length + 1;
+						this.books.push(this.book);
+						// 对添加的书籍信息进行清空操作
+						this.book = '';
+					},
+					delBook: function(book){
+						this.books.$remove(book);
+					}
+				}			
+			});
+		</script>
+	</body>
+</html>
